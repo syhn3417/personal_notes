@@ -1,0 +1,35 @@
+from exchangelib import Credentials, Account, DELEGATE
+
+def has_reply(email):
+    # Check if the email has the InReplyTo or References header
+    in_reply_to = email.headers.get('InReplyTo')
+    references = email.headers.get('References')
+
+    return in_reply_to is not None or references is not None
+
+if __name__ == "__main__":
+    # Replace with your Exchange server and credentials
+    exchange_server = 'https://your-exchange-server/EWS/Exchange.asmx'
+    email_address = 'your-email@domain.com'
+    password = 'your-password'
+
+    credentials = Credentials(username=email_address, password=password)
+    account = Account(
+        primary_smtp_address=email_address,
+        credentials=credentials,
+        autodiscover=False,
+        config={
+            'server': exchange_server,
+            'credentials': credentials,
+            'verify_ssl': True,
+        },
+        access_type=DELEGATE,
+    )
+
+    # Replace with the email to check for replies
+    email_to_check = account.inbox.get(subject="Email Subject")
+
+    if has_reply(email_to_check):
+        print("The email has a reply in the mail trail.")
+    else:
+        print("The email does not have a reply in the mail trail.")
