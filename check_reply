@@ -1,11 +1,19 @@
 from exchangelib import Credentials, Account, DELEGATE
 
-def has_reply(email):
-    # Check if the email has the InReplyTo or References header
-    in_reply_to = email.headers.get('InReplyTo')
-    references = email.headers.get('References')
+def get_emails_without_replies(account):
+    emails_without_replies = []
 
-    return in_reply_to is not None or references is not None
+    # Fetch all emails from the inbox
+    emails = account.inbox.all()
+
+    for email in emails:
+        # Check if the email has a reply
+        if email.in_reply_to:
+            print(f"Email with subject '{email.subject}' has a reply.")
+        else:
+            emails_without_replies.append(email)
+
+    return emails_without_replies
 
 if __name__ == "__main__":
     # Replace with your Exchange server and credentials
@@ -26,10 +34,11 @@ if __name__ == "__main__":
         access_type=DELEGATE,
     )
 
-    # Replace with the email to check for replies
-    email_to_check = account.inbox.get(subject="Email Subject")
+    emails_without_replies = get_emails_without_replies(account)
 
-    if has_reply(email_to_check):
-        print("The email has a reply in the mail trail.")
+    if emails_without_replies:
+        print("Emails without replies:")
+        for email in emails_without_replies:
+            print(f"Subject: {email.subject}")
     else:
-        print("The email does not have a reply in the mail trail.")
+        print("No emails without replies found.")
