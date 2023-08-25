@@ -1,32 +1,18 @@
-import selectors
-import sys
+# Import the libraries inputimeout, TimeoutOccurred
+from inputimeout import inputimeout
 
-def read_input():
-    # Create a selector object
-    selector = selectors.DefaultSelector()
+# Try block of code
+# and handle errors
+try:
 
-    # Register the standard input (sys.stdin) for reading with a timeout
-    selector.register(sys.stdin, selectors.EVENT_READ)
+	# Take timed input using inputimeout() function
+	time_over = inputimeout(prompt='Name your best friend:', timeout=3)
 
-    try:
-        print("Enter something (or press Enter to skip):")
-        events = selector.select(timeout=30)  # Wait for input for 30 seconds
+# Catch the timeout error
+except Exception:
 
-        if events:
-            # User provided input within the timeout
-            user_input = sys.stdin.readline().strip()
-            return user_input
-        else:
-            print("No input received. Skipping.")
-            return None
+	# Declare the timeout statement
+	time_over = 'Your time is over!'
+	print(time_over)
 
-    except KeyboardInterrupt:
-        return None
-
-if __name__ == "__main__":
-    user_input = read_input()
-
-    if user_input is not None:
-        print("You entered:", user_input)
-    else:
-        print("No input received.")
+# Print the statement on timeoutprint(time_over)
